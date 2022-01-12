@@ -1,0 +1,6 @@
+.idea
+/data/processed_bank_data.csv
+/models/*.pickle
+/models/*.pkl
+/logs/churn_library.log
+/eda/*.jpg

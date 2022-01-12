@@ -1,0 +1,9 @@
+pylint
+autopep8
+black
+shap
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
