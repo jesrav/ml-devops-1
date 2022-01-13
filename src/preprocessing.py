@@ -1,8 +1,8 @@
 """Preprocess the raw data to prepare for modelling"""
 import pandas as pd
 
-from common import import_data
-import config
+from src.common import import_data
+from src import config
 
 
 def add_churn_target(dataf: pd.DataFrame) -> pd.DataFrame:

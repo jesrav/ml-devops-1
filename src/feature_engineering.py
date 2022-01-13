@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 
-import config
+from src import config
 
 
 def add_mean_within_category(
@@ -56,7 +56,11 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == '__main__':
-
+    print("Read processed data.")
     df = pd.read_csv(config.PROCESSED_DATA_PATH)
+
+    print("Add features.")
     df = add_features(df)
+
+    print(f"Write data with features to {config.MODELLING_DATA_PATH}.")
     df.to_csv(config.MODELLING_DATA_PATH)
