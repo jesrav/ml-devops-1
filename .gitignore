@@ -4,3 +4,4 @@
 /models/*.pkl
 /logs/churn_library.log
 /eda/*.jpg
+/data/modelling_bank_data.csv
