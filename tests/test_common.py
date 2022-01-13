@@ -1,25 +1,22 @@
 import logging
+
+import pytest
+
 from src.common import import_data
 
-logging.basicConfig(
-    filename='../logs/churn_library.log',
-    level=logging.INFO,
-    filemode='w',
-    format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 def test_import():
     """test data import"""
-    try:
-        df = import_data("./data/bank_data.csv")
-        logging.info("Testing import_data: SUCCESS")
-    except FileNotFoundError as err:
-        logging.error("Testing import_eda: The file wasn't found")
-        raise err
+    df = import_data("./data/bank_data.csv")
+    logger.info("Testing import_data: SUCCESS")
+    assert df.shape[0] > 0
+    assert df.shape[1] > 0
 
-    try:
-        assert df.shape[0] > 0
-        assert df.shape[1] > 0
-    except AssertionError as err:
-        logging.error("Testing import_data: The file doesn't appear to have rows and columns")
-        raise err
+
+def test_import_raises_right_error():
+    """test data import throws the correct error"""
+    with pytest.raises(FileNotFoundError) as e:
+        import_data("/wrong/path/to/a.csv")
+    assert str(e.value) == "No file found in path /wrong/path/to/a.csv."
