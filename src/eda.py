@@ -6,7 +6,7 @@ import seaborn as sns
 import config
 from common import import_data
 
-os.environ['QT_QPA_PLATFORM']='offscreen'
+os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 
 
 def plot_univariate_hist(dataf: pd.DataFrame, col_name: str, out_path: str) -> None:
@@ -35,7 +35,7 @@ def plot_correlation_heatmap(dataf: pd.DataFrame, out_path: str) -> None:
     Plot histogram of churn.
 
     input:
-        dataf: pandas dataframe with preprocessed data. Must include chrun column.
+        dataf: pandas dataframe with preprocessed data. Must include churn column.
         out_path: String with outpath for plot.
 
     output:
@@ -48,6 +48,7 @@ def plot_correlation_heatmap(dataf: pd.DataFrame, out_path: str) -> None:
 
 if __name__ == '__main__':
     df = import_data(config.PROCESSED_DATA_PATH)
-    plot_univariate_hist(df, "churn", config.CHURN_HIST_PATH)
+    plot_univariate_hist(df, "Churn", config.CHURN_HIST_PATH)
     plot_univariate_hist(df, "Customer_Age", config.AGE_HIST_PATH)
     plot_correlation_heatmap(df, config.CORR_HEATMAP_PATH)
+
