@@ -1,6 +1,6 @@
 from src.logger import logger
 from src.common import import_data
-from src.feature_engineering import get_mean_within_category
+from src.data.feature_engineering import get_mean_within_category
 
 logging.basicConfig(
     filename='../logs/churn_library.log',

@@ -13,7 +13,9 @@ from sklearn.metrics import classification_report
 class Evaluation:
     """Class to do evaluation on a modelling_artifacts performance"""
 
-    def __init__(self, y_true: np.ndarray, y_proba: np.ndarray, prediction_threshold: float) -> None:
+    def __init__(
+        self, y_true: np.ndarray, y_proba: np.ndarray, prediction_threshold: float
+    ) -> None:
         """Construct the Evaluation object
         :y_true: y_true (array-like, shape (n_samples)) – Ground truth (correct) target values.
         :y_proba: (array-like, shape (n_samples, 2)) – Prediction probabilities for the two classes
@@ -27,10 +29,10 @@ class Evaluation:
 
         if len(y_true) != len(y_proba):
             raise ValueError("Length of y_true and y_proba must be the same.")
-        self.y_true=y_true
+        self.y_true = y_true
         self.y_proba = y_proba
         self.prediction_threshold = prediction_threshold
-        self.y_pred = (self.y_proba[:, 1] > self.prediction_threshold)
+        self.y_pred = self.y_proba[:, 1] > self.prediction_threshold
 
     def get_classification_report(self) -> dict:
         return classification_report(
@@ -63,7 +65,9 @@ class Evaluation:
         """Plot probability calibration curve"""
         fig, ax = plt.subplots()
         _ = skplt.metrics.plot_calibration_curve(
-            self.y_true, probas_list=[self.y_proba], title="Calibration plot for probability."
+            self.y_true,
+            probas_list=[self.y_proba],
+            title="Calibration plot for probability.",
         )
         plt.savefig(str(outpath))
         plt.close()
@@ -72,7 +76,11 @@ class Evaluation:
         """Plot precision-recalls curve"""
         fig, ax = plt.subplots()
         _ = skplt.metrics.plot_precision_recall(
-            self.y_true, self.y_proba, plot_micro=False, classes_to_plot=[1], title="Precision-recall Curve."
+            self.y_true,
+            self.y_proba,
+            plot_micro=False,
+            classes_to_plot=[1],
+            title="Precision-recall Curve.",
         )
         plt.savefig(str(outpath))
         plt.close()
@@ -81,6 +89,8 @@ class Evaluation:
         """Save all evaluation artifacts to a folder"""
         self.plot_auc(outdir / Path("auc_plot.png"))
         self.plot_precision_recall(outdir / Path("precision_recall_plot.png"))
-        self.plot_probability_calibration_curve(outdir / Path("probability_calibration_plot.png"))
+        self.plot_probability_calibration_curve(
+            outdir / Path("probability_calibration_plot.png")
+        )
         with open(outdir / Path("metrics.json"), "w") as f:
             json.dump(self.get_classification_report(), f)

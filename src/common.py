@@ -14,6 +14,3 @@ def import_data(pth: str) -> pd.DataFrame:
         return pd.read_csv(pth)
     except FileNotFoundError:
         raise FileNotFoundError(f"No file found in path {pth}.")
-
-
-

@@ -10,7 +10,7 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Read processed data.")
     df = import_data(config.PROCESSED_DATA_PATH)
 

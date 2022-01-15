@@ -7,6 +7,6 @@ setup(
     description="Dummy ML project.",
     author="Jes Ravnbøl",
     author_email="jesravnbol@hotmail.com",
-    license='MIT',
+    license="MIT",
     packages=find_packages(where="."),
 )
