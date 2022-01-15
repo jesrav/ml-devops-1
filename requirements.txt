@@ -9,3 +9,4 @@ autopep8
 black
 pytest
 scikit-plot
+rich

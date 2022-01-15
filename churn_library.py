@@ -87,7 +87,7 @@ def feature_importance_plot(model, X_data, output_pth):
 
 def train_models(X_train, X_test, y_train, y_test):
     """
-    train, store model results: images + scores, and store models
+    train, store model results: images + scores, and store modelling_artifacts
     input:
               X_train: X training data
               X_test: X testing data

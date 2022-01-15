@@ -11,7 +11,7 @@ from sklearn.metrics import classification_report
 
 
 class Evaluation:
-    """Class to do evaluation on a models performance"""
+    """Class to do evaluation on a modelling_artifacts performance"""
 
     def __init__(self, y_true: np.ndarray, y_proba: np.ndarray, prediction_threshold: float) -> None:
         """Construct the Evaluation object

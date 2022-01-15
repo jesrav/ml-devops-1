@@ -1,4 +1,4 @@
-from logger import logger
+from src.logger import logger
 from src.common import import_data
 from src.feature_engineering import get_mean_within_category
 

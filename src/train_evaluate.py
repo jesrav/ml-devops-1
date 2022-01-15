@@ -2,15 +2,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
 
+from src.common import import_data
 from src.evaluation import Evaluation
-import config
+import src.config as config
 
-df = pd.read_csv(config.MODELLING_DATA_PATH)
+df = import_data(config.MODELLING_DATA_PATH)
 
 
-keep_cols = ['Customer_Age', 'Dependent_count', 'Months_on_book',
+features = ['Customer_Age', 'Dependent_count', 'Months_on_book',
              'Total_Relationship_Count', 'Months_Inactive_12_mon',
              'Contacts_Count_12_mon', 'Credit_Limit', 'Total_Revolving_Bal',
              'Avg_Open_To_Buy', 'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
@@ -18,10 +18,27 @@ keep_cols = ['Customer_Age', 'Dependent_count', 'Months_on_book',
              'Gender_Churn', 'Education_Level_Churn', 'Marital_Status_Churn',
              'Income_Category_Churn', 'Card_Category_Churn']
 
+
+
+def get_feature_names(ml_pipeline):
+    ml_pipeline["feature_preprocess"].transformer_list[0][1][2].feature_names_in_ = CATEGORICAL_COLS
+    return (
+        ml_pipeline["feature_preprocess"].transformer_list[0][1][2].get_feature_names_out().tolist()
+        + NUMERICAL_COLS
+    )
+
+
+def get_feature_importances(ml_pipeline):
+    return pd.DataFrame(
+        zip(get_feature_names(ml_pipeline), ml_pipeline["classifier"].feature_importances_),
+        columns=["feature", "importance"]
+    ).sort_values(by="importance", ascending=False)
 X = df[keep_cols]
+y = df["Churn"]
 
 # train test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 0.3, random_state=42)
+
 
 # grid search
 #rfc = RandomForestClassifier(random_state=42)
@@ -57,4 +74,4 @@ train_evaluation = Evaluation(
     y_proba=y_train_probas,
     prediction_threshold=0.5
 )
-test_evaluation.save_evaluation_artifacts("models")
+test_evaluation.save_evaluation_artifacts("modelling_artifacts")
