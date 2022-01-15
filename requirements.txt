@@ -11,3 +11,4 @@ pytest
 scikit-plot
 rich
 sklego
+click

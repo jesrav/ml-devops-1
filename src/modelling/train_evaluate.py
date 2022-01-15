@@ -1,31 +1,57 @@
+import importlib
+
 from sklearn.model_selection import train_test_split
+import click
 
 from src.common import import_data
 import src.config as config
+from src.logger import logger
 from src.modelling.evaluation import Evaluation
 from src.modelling.model_configs import logreg as model_conf
 
 
-def main()
-    df = import_data(config.PROCESSED_DATA_PATH)
+@click.command()
+@click.argument(
+    'model-config-module',
+    type=str,
+)
+@click.argument(
+    'run-name',
+    type=str,
+)
+def main(model_config_module, run_name):
+    logger.info(f"Loading modelling data from {config.MODELLING_DATA_PATH}")
+    df = import_data(config.MODELLING_DATA_PATH)
 
-    # train test split
+    logger.info(f"Importing model configuration from module {model_config_module}.")
+    model_config = importlib.import_module(model_config_module)
+
+    logger.info(f"Splitting modelliung data in test and train set.")
     train_df, test_df = train_test_split(
         df, test_size=0.3, random_state=42
     )
 
-    model_conf.pipeline.fit(train_df, train_df[model_conf.TARGET])
+    logger.info(f"Fitting ml pipeline.")
+    model_conf.pipeline.fit(train_df, train_df[model_config.TARGET])
 
-    y_train_preds = model_conf.pipeline.predict(train_df)
-    y_test_preds = model_conf.pipeline.predict(test_df)
-    y_train_probas = model_conf.pipeline.predict_proba(train_df)
-    y_test_probas = model_conf.pipeline.predict_proba(test_df)
-
+    logger.info(f"Evaluating ml pipeline on test set and saving artifacts to {config.ARTIFACT_DIR}.")
+    y_test_probas = model_config.pipeline.predict_proba(test_df)
     test_evaluation = Evaluation(
         y_true=test_df[model_conf.TARGET], y_proba=y_test_probas, prediction_threshold=0.5
     )
+    test_evaluation.save_evaluation_artifacts(
+        outdir=config.ARTIFACT_DIR, artifact_prefix=f"{run_name}_test"
+    )
+
+    logger.info(f"Evaluating ml pipeline on train set and saving artifacts to {config.ARTIFACT_DIR}.")
+    y_train_probas = model_config.pipeline.predict_proba(train_df)
     train_evaluation = Evaluation(
        y_true=train_df[model_conf.TARGET], y_proba=y_train_probas, prediction_threshold=0.5
     )
-    test_evaluation.save_evaluation_artifacts("modelling_artifacts", artifact_prefix="logreg_train")
-    test_evaluation.save_evaluation_artifacts("modelling_artifacts", "logreg_train")
+    train_evaluation.save_evaluation_artifacts(
+        outdir=config.ARTIFACT_DIR, artifact_prefix=f"{run_name}_train"
+    )
+
+
+if __name__ == '__main__':
+    main()

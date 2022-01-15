@@ -92,6 +92,7 @@ target/
 /models/*.pickle
 /modelling_artifacts/*.pkl
 /modelling_artifacts/*.jpg
+/modelling_artifacts/*.png
 /modelling_artifacts/*.json
 /modelling_artifacts/*.csv
 /logs/churn_library.log
