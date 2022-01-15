@@ -1,10 +1,11 @@
+"""module for for explorative data analysis."""
 import os
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 
-import config
-from common import import_data
+from src import config
+from src.utils import import_data
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 

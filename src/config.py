@@ -1,3 +1,4 @@
+"""Project configuration"""
 RAW_DATA_PATH = "data/bank_data.csv"
 PROCESSED_DATA_PATH = "data/processed_bank_data.csv"
 MODELLING_DATA_PATH = "data/modelling_bank_data.csv"

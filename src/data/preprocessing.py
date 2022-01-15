@@ -1,7 +1,7 @@
 """Preprocess the raw data."""
 import pandas as pd
 
-from src.common import import_data
+from src.utils import import_data
 from src import config
 from src.logger import logger
 

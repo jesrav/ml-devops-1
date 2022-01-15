@@ -3,7 +3,7 @@ import pandas as pd
 
 from src import config
 from src.logger import logger
-from src.common import import_data
+from src.utils import import_data
 
 
 def add_features(df: pd.DataFrame) -> pd.DataFrame:

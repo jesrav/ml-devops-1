@@ -1,3 +1,4 @@
+"""Utility module."""
 import pandas as pd
 
 

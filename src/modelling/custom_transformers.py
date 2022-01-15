@@ -8,7 +8,8 @@ from sklearn.base import TransformerMixin, BaseEstimator
 
 class AddMeanWithinCategory(TransformerMixin, BaseEstimator):
     """
-    Transformer that adds column with the mean of a target col within a category found in another column.
+    Transformer that adds column with the mean of a target col within a category
+    found in another column.
     """
 
     def __init__(

@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from src.common import import_data
+from src.utils import import_data
 
 logger = logging.getLogger(__name__)
 

@@ -11,9 +11,9 @@ logger.setLevel(logging.INFO)
 shell_handler.setLevel(logging.INFO)
 
 # the formatter determines what our logs will look like
-fmt_shell = "%(message)s"
+FMT_SHELL = "%(message)s"
 
-shell_formatter = logging.Formatter(fmt_shell)
+shell_formatter = logging.Formatter(FMT_SHELL)
 
 # here we hook everything together
 shell_handler.setFormatter(shell_formatter)

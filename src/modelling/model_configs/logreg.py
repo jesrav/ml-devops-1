@@ -1,3 +1,4 @@
+"""Model config for ML pipeline using a logistig regression model."""
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklego.preprocessing import ColumnSelector, ColumnDropper

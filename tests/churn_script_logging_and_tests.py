@@ -1,5 +1,5 @@
 from src.logger import logger
-from src.common import import_data
+from src.utils import import_data
 from src.data.feature_engineering import get_mean_within_category
 
 logging.basicConfig(
