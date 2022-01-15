@@ -10,3 +10,4 @@ black
 pytest
 scikit-plot
 rich
+sklego

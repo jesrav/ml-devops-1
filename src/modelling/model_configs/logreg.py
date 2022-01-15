@@ -1,9 +1,9 @@
-from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
-
+from sklego.preprocessing import ColumnSelector, ColumnDropper
 from src.modelling.custom_transformers import AddMeanWithinCategory
 
+TARGET = "Churn"
 FEATURES = [
     "Customer_Age",
     "Dependent_count",
@@ -19,36 +19,54 @@ FEATURES = [
     "Total_Trans_Ct",
     "Total_Ct_Chng_Q4_Q1",
     "Avg_Utilization_Ratio",
+    "Gender",
+    "Education_Level",
+    "Marital_Status",
+    "Income_Category",
+    "Card_Category",
 ]
-
-columns_selector = ColumnTransformer(
-    transformers=[("selector", "passthrough", FEATURES)],
-    remainder="drop",
-)
-
-churn_group_mean_transformer = AddMeanWithinCategory(
-    cat_cols=[
+CAT_COLS=[
         "Gender",
         "Education_Level",
         "Marital_Status",
         "Income_Category",
         "Card_Category",
-    ],
+    ]
+churn_group_mean_transformer = AddMeanWithinCategory(
+    cat_cols=CAT_COLS,
     target_col="Churn",
-    new_col_names=[
-        "Gender_Churn",
-        "Education_Level_Churn",
-        "Marital_Status_Churn",
-        "Income_Category_Churn",
-        "Card_Category_Churn",
-    ],
+    new_col_names=[col + "_Churn" for col in CAT_COLS],
 )
-
 
 pipeline = Pipeline(
     [
-        ("column_selector", columns_selector),
-        ("column_selector", churn_group_mean_transformer),
+        ("select_columns", ColumnSelector(FEATURES + [TARGET])),
+        ("create_churn_group_means", churn_group_mean_transformer),
+        ("drop_cat_cols_and_target", ColumnDropper(CAT_COLS + [TARGET])),
         ("classifier", LogisticRegression())
     ]
 )
+
+
+#
+# def get_feature_names(ml_pipeline):
+#     ml_pipeline["feature_preprocess"].transformer_list[0][1][
+#         2
+#     ].feature_names_in_ = CATEGORICAL_COLS
+#     return (
+#         ml_pipeline["feature_preprocess"]
+#         .transformer_list[0][1][2]
+#         .get_feature_names_out()
+#         .tolist()
+#         + NUMERICAL_COLS
+#     )
+#
+#
+# def get_feature_importances(ml_pipeline):
+#     return pd.DataFrame(
+#         zip(
+#             get_feature_names(ml_pipeline),
+#             ml_pipeline["classifier"].feature_importances_,
+#         ),
+#         columns=["feature", "importance"],
+#     ).sort_values(by="importance", ascending=False)

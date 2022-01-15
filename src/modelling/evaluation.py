@@ -3,6 +3,7 @@ The main function is evaluate, which returns metrics and plots about out of samp
 """
 import json
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 import scikitplot as skplt
@@ -14,13 +15,13 @@ class Evaluation:
     """Class to do evaluation on a modelling_artifacts performance"""
 
     def __init__(
-        self, y_true: np.ndarray, y_proba: np.ndarray, prediction_threshold: float
+        self, y_true: np.ndarray, y_proba: np.ndarray, prediction_threshold: float,
     ) -> None:
         """Construct the Evaluation object
         :y_true: y_true (array-like, shape (n_samples)) – Ground truth (correct) target values.
         :y_proba: (array-like, shape (n_samples, 2)) – Prediction probabilities for the two classes
             returned by a classifier.
-        :prediction_threshold; Threshold over which to predict a
+        :prediction_threshold: Threshold over which to predict a
         :return: None
         """
 
@@ -85,12 +86,12 @@ class Evaluation:
         plt.savefig(str(outpath))
         plt.close()
 
-    def save_evaluation_artifacts(self, outdir: Path) -> None:
+    def save_evaluation_artifacts(self, outdir: Union[Path, str], artifact_prefix: str) -> None:
         """Save all evaluation artifacts to a folder"""
-        self.plot_auc(outdir / Path("auc_plot.png"))
-        self.plot_precision_recall(outdir / Path("precision_recall_plot.png"))
+        self.plot_auc(Path(outdir) / Path(f"{artifact_prefix}_auc_plot.png"))
+        self.plot_precision_recall(Path(outdir) / Path(f"{artifact_prefix}_precision_recall_plot.png"))
         self.plot_probability_calibration_curve(
-            outdir / Path("probability_calibration_plot.png")
+            Path(outdir) / Path(f"{artifact_prefix}_probability_calibration_plot.png")
         )
-        with open(outdir / Path("metrics.json"), "w") as f:
+        with open(Path(outdir) / Path(f"{artifact_prefix}_metrics.json"), "w") as f:
             json.dump(self.get_classification_report(), f)
