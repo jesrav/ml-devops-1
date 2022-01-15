@@ -1,5 +1,5 @@
 from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklego.preprocessing import ColumnSelector, ColumnDropper
 from src.modelling.custom_transformers import AddMeanWithinCategory
 
@@ -43,7 +43,7 @@ pipeline = Pipeline(
         ("select_columns", ColumnSelector(FEATURES + [TARGET])),
         ("create_churn_group_means", churn_group_mean_transformer),
         ("drop_cat_cols_and_target", ColumnDropper(CAT_COLS + [TARGET])),
-        ("classifier", LogisticRegression())
+        ("classifier", RandomForestClassifier())
     ]
 )
 

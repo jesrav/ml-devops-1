@@ -1,7 +1,8 @@
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfile_dir := $(dir $(mkfile_path))
 
-modelling_pipeline: preprocess add_features eda train_evaluate_logreg
+ml_pipeline: preprocess add_features eda
+ml_pipeline: train_evaluate_logreg train_evaluate_random_forest
 
 preprocess:
 	python3 src/data/preprocessing.py
@@ -15,6 +16,8 @@ eda:
 train_evaluate_logreg:
 	python3 src/modelling/train_evaluate.py "src.modelling.model_configs.logreg" "logreg"
 
+train_evaluate_random_forest:
+	python3 src/modelling/train_evaluate.py "src.modelling.model_configs.random_forest" "random_forest"
 
 
 ########################################################

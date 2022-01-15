@@ -7,7 +7,6 @@ from src.common import import_data
 import src.config as config
 from src.logger import logger
 from src.modelling.evaluation import Evaluation
-from src.modelling.model_configs import logreg as model_conf
 
 
 @click.command()
@@ -32,12 +31,12 @@ def main(model_config_module, run_name):
     )
 
     logger.info(f"Fitting ml pipeline.")
-    model_conf.pipeline.fit(train_df, train_df[model_config.TARGET])
+    model_config.pipeline.fit(train_df, train_df[model_config.TARGET])
 
     logger.info(f"Evaluating ml pipeline on test set and saving artifacts to {config.ARTIFACT_DIR}.")
     y_test_probas = model_config.pipeline.predict_proba(test_df)
     test_evaluation = Evaluation(
-        y_true=test_df[model_conf.TARGET], y_proba=y_test_probas, prediction_threshold=0.5
+        y_true=test_df[model_config.TARGET], y_proba=y_test_probas, prediction_threshold=0.5
     )
     test_evaluation.save_evaluation_artifacts(
         outdir=config.ARTIFACT_DIR, artifact_prefix=f"{run_name}_test"
@@ -46,7 +45,7 @@ def main(model_config_module, run_name):
     logger.info(f"Evaluating ml pipeline on train set and saving artifacts to {config.ARTIFACT_DIR}.")
     y_train_probas = model_config.pipeline.predict_proba(train_df)
     train_evaluation = Evaluation(
-       y_true=train_df[model_conf.TARGET], y_proba=y_train_probas, prediction_threshold=0.5
+       y_true=train_df[model_config.TARGET], y_proba=y_train_probas, prediction_threshold=0.5
     )
     train_evaluation.save_evaluation_artifacts(
         outdir=config.ARTIFACT_DIR, artifact_prefix=f"{run_name}_train"
