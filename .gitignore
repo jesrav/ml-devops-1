@@ -90,11 +90,11 @@ target/
 
 /data/processed_bank_data.csv
 /models/*.pickle
-/modelling_artifacts/*.pkl
-/modelling_artifacts/*.jpg
-/modelling_artifacts/*.png
-/modelling_artifacts/*.json
-/modelling_artifacts/*.csv
+/modelling_artifacts/**/*.pkl
+/modelling_artifacts/**/*.jpg
+/modelling_artifacts/**/*.png
+/modelling_artifacts/**/*.json
+/modelling_artifacts/**/*.csv
 /logs/churn_library.log
 /eda/*.jpg
 /data/modelling_bank_data.csv

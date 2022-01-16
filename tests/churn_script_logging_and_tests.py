@@ -1,4 +1,4 @@
-import  logging
+#import  logging
 
 import pytest
 import pandas as pd
@@ -7,13 +7,14 @@ import numpy as np
 from src.data.preprocessing import add_churn_target
 from src.utils import import_data
 from src.modelling.custom_transformers import AddMeanWithinCategory
+from src.logger import logger
 
 
-logging.basicConfig(
-    filename='logs/churn_library.log',
-    level=logging.INFO,
-    filemode='w',
-    format='%(name)s - %(levelname)s - %(message)s')
+# logging.basicConfig(
+#     filename='logs/churn_library.log',
+#     level=logging.INFO,
+#     filemode='w',
+#     format='%(name)s - %(levelname)s - %(message)s')
 
 
 
@@ -23,16 +24,16 @@ def test_import(import_data_func):
     """
     try:
         df = import_data_func("./data/bank_data.csv")
-        logging.info("Testing import_data: SUCCESS")
+        logger.info("Testing import_data: SUCCESS")
     except FileNotFoundError as err:
-        logging.error("Testing import_eda: The file wasn't found")
+        logger.error("Testing import_eda: The file wasn't found")
         raise err
 
     try:
         assert df.shape[0] > 0
         assert df.shape[1] > 0
     except AssertionError as err:
-        logging.error("Testing import_data: The file doesn't appear to have rows and columns")
+        logger.error("Testing import_data: The file doesn't appear to have rows and columns")
         raise err
 
 
@@ -45,9 +46,9 @@ def test_import_raises_right_error(import_data_func):
         assert str(error_msg.value) == expected_error, \
         f"'{str(error_msg.value)}' is not equal expected error '{expected_error}'"
 
-        logging.info("Testing import_data raises the right error: SUCCESS")
+        logger.info("Testing import_data raises the right error: SUCCESS")
     except AssertionError as e:
-        logging.info(
+        logger.info(
             f"Testing that import_data raises the right error: FAILS -"
             f"import_data does not raise the right error when wrong path is supplied: {e}"
         )
@@ -68,9 +69,9 @@ def test_add_mean_within_category(transformer_cls):
         assert (
             group_mean_transformer.fit_transform(input_df)["grouped_mean"].values == expected_result
         ).all()
-        logging.info("Testing AddMeanWithinCategory transformer: SUCCESS")
+        logger.info("Testing AddMeanWithinCategory transformer: SUCCESS")
     except AssertionError as e:
-        logging.info(
+        logger.info(
             f"Testing AddMeanWithinCategory transformer: FAILS - "
             f"The transformer does not produce the expected results : {e}."
         )
@@ -96,14 +97,14 @@ def test_add_churn_target(add_churn_target_func):
                 "Attrited Customer",
             ],
             "dummy": [1, 3, 3],
-            "Churn": [0, 0, 1],
+            "Churn": [0, 0, 0],
         }
     )
     try:
         pd.testing.assert_frame_equal(add_churn_target_func(input_df), expected_result)
-        logging.info("Testing add_churn_target: SUCCESS")
+        logger.info("Testing add_churn_target: SUCCESS")
     except AssertionError as e:
-        logging.info(
+        logger.info(
             f"Testing add_churn_target: FAILS -"
             f"The transformed data frame does not match the expected results: {e}"
         )

@@ -66,3 +66,4 @@ def save_fitted_pipeline_plots(out_dir: str):
 
     barplot_fig = sns.barplot(x="feature", y="importance", data=feature_importance_df).get_figure()
     barplot_fig.savefig(Path(out_dir) / Path("random_forest_feature_importances.png"))
+    pass

@@ -1,5 +1,6 @@
 """Module for training and evaluating a sklearn compatible ML pipeline."""
 import importlib
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 import click
@@ -19,7 +20,11 @@ from src.modelling.evaluation import Evaluation
     'run-name',
     type=str,
 )
-def train_and_evaluate(model_config_module: str, run_name: str) -> None:
+@click.argument(
+    'artifact-dir',
+    type=str,
+)
+def train_and_evaluate(model_config_module: str, run_name: str, artifact_dir: str) -> None:
     """
     Train and evaluate ml model pipeline
 
@@ -32,6 +37,10 @@ def train_and_evaluate(model_config_module: str, run_name: str) -> None:
     output:
             None
     """
+    logger.info("Creating artifact directory %s if it does not exist", artifact_dir)
+    artifact_dir = Path(artifact_dir)
+    artifact_dir.mkdir(parents=False, exist_ok=True)
+
     logger.info("Loading modelling data from %s ", config.MODELLING_DATA_PATH)
     df = import_data(config.MODELLING_DATA_PATH)
 
@@ -46,29 +55,29 @@ def train_and_evaluate(model_config_module: str, run_name: str) -> None:
     logger.info("Fitting ml pipeline.")
     model_config.pipeline.fit(train_df, train_df[model_config.TARGET])
 
-    logger.info(f"Saving plots specific to the fitted model to {config.ARTIFACT_DIR}.")
-    model_config.save_fitted_pipeline_plots(config.ARTIFACT_DIR)
+    logger.info(f"Saving plots specific to the fitted model to {artifact_dir}.")
+    model_config.save_fitted_pipeline_plots(artifact_dir)
 
     logger.info(
-        "Evaluating ml pipeline on test set and saving artifacts to %s ", config.ARTIFACT_DIR
+        "Evaluating ml pipeline on test set and saving artifacts to %s ", artifact_dir
     )
     y_test_probas = model_config.pipeline.predict_proba(test_df)
     test_evaluation = Evaluation(
         y_true=test_df[model_config.TARGET], y_proba=y_test_probas, prediction_threshold=0.5
     )
     test_evaluation.save_evaluation_artifacts(
-        outdir=config.ARTIFACT_DIR, artifact_prefix=f"{run_name}_test"
+        outdir=artifact_dir, artifact_prefix=f"{run_name}_test"
     )
 
     logger.info(
-        "Evaluating ml pipeline on train set and saving artifacts to %s ", config.ARTIFACT_DIR
+        "Evaluating ml pipeline on train set and saving artifacts to %s ", artifact_dir
     )
     y_train_probas = model_config.pipeline.predict_proba(train_df)
     train_evaluation = Evaluation(
        y_true=train_df[model_config.TARGET], y_proba=y_train_probas, prediction_threshold=0.5
     )
     train_evaluation.save_evaluation_artifacts(
-        outdir=config.ARTIFACT_DIR, artifact_prefix=f"{run_name}_train"
+        outdir=artifact_dir, artifact_prefix=f"{run_name}_train"
     )
 
 

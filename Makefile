@@ -14,13 +14,19 @@ eda:
 	python3 src/modelling/eda.py
 
 train_evaluate_logreg:
-	python3 src/modelling/train_evaluate.py "src.modelling.model_configs.logreg" "logreg"
+	python3 src/modelling/train_evaluate.py \
+	"src.modelling.model_configs.logreg" \
+	"logreg" \
+	"modelling_artifacts/logreg"
 
 train_evaluate_random_forest:
-	python3 src/modelling/train_evaluate.py "src.modelling.model_configs.random_forest" "random_forest"
+	python3 src/modelling/train_evaluate.py \
+	"src.modelling.model_configs.random_forest" \
+	"random_forest" \
+	"modelling_artifacts/random_forest"
 
 run_and_log_tests:
-	pytest --log-cli-level info > logs/churn_library.log
+	python3 tests/churn_script_logging_and_tests.py --log-cli-level info > logs/churn_library.log
 
 ########################################################
 # Utils
