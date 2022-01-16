@@ -2,6 +2,7 @@
 import importlib
 from pathlib import Path
 
+import joblib
 from sklearn.model_selection import train_test_split
 import click
 
@@ -79,6 +80,12 @@ def train_and_evaluate(model_config_module: str, run_name: str, artifact_dir: st
     train_evaluation.save_evaluation_artifacts(
         outdir=artifact_dir, artifact_prefix=f"{run_name}_train"
     )
+
+    model_outpath = artifact_dir / Path("model.pkl")
+    logger.info(
+        "Serialize ml pipeline object to %s", model_outpath
+    )
+    joblib.dump(model_config.pipeline, model_outpath)
 
 
 if __name__ == '__main__':
