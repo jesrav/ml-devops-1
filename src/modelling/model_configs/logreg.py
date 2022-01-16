@@ -49,25 +49,5 @@ pipeline = Pipeline(
 )
 
 
-#
-# def get_feature_names(ml_pipeline):
-#     ml_pipeline["feature_preprocess"].transformer_list[0][1][
-#         2
-#     ].feature_names_in_ = CATEGORICAL_COLS
-#     return (
-#         ml_pipeline["feature_preprocess"]
-#         .transformer_list[0][1][2]
-#         .get_feature_names_out()
-#         .tolist()
-#         + NUMERICAL_COLS
-#     )
-#
-#
-# def get_feature_importances(ml_pipeline):
-#     return pd.DataFrame(
-#         zip(
-#             get_feature_names(ml_pipeline),
-#             ml_pipeline["classifier"].feature_importances_,
-#         ),
-#         columns=["feature", "importance"],
-#     ).sort_values(by="importance", ascending=False)
+def save_fitted_pipeline_plots(outdir: str):
+    pass

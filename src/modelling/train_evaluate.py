@@ -32,10 +32,10 @@ def train_and_evaluate(model_config_module: str, run_name: str) -> None:
     output:
             None
     """
-    logger.info("Loading modelling data from %d ", config.MODELLING_DATA_PATH)
+    logger.info("Loading modelling data from %s ", config.MODELLING_DATA_PATH)
     df = import_data(config.MODELLING_DATA_PATH)
 
-    logger.info("Importing model configuration from module %d ", model_config_module)
+    logger.info("Importing model configuration from module %s ", model_config_module)
     model_config = importlib.import_module(model_config_module)
 
     logger.info("Splitting modelliung data in test and train set.")
@@ -46,8 +46,11 @@ def train_and_evaluate(model_config_module: str, run_name: str) -> None:
     logger.info("Fitting ml pipeline.")
     model_config.pipeline.fit(train_df, train_df[model_config.TARGET])
 
+    logger.info(f"Saving plots specific to the fitted model to {config.ARTIFACT_DIR}.")
+    model_config.save_fitted_pipeline_plots(config.ARTIFACT_DIR)
+
     logger.info(
-        "Evaluating ml pipeline on test set and saving artifacts to %d ", config.ARTIFACT_DIR
+        "Evaluating ml pipeline on test set and saving artifacts to %s ", config.ARTIFACT_DIR
     )
     y_test_probas = model_config.pipeline.predict_proba(test_df)
     test_evaluation = Evaluation(
@@ -58,7 +61,7 @@ def train_and_evaluate(model_config_module: str, run_name: str) -> None:
     )
 
     logger.info(
-        "Evaluating ml pipeline on train set and saving artifacts to %d ", config.ARTIFACT_DIR
+        "Evaluating ml pipeline on train set and saving artifacts to %s ", config.ARTIFACT_DIR
     )
     y_train_probas = model_config.pipeline.predict_proba(train_df)
     train_evaluation = Evaluation(

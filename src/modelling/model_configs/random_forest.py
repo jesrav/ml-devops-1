@@ -1,7 +1,12 @@
 """Model config for ML pipeline using a logistig regression model."""
+from pathlib import Path
+
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklego.preprocessing import ColumnSelector, ColumnDropper
+import pandas as pd
+import seaborn as sns
+
 from src.modelling.custom_transformers import AddMeanWithinCategory
 
 TARGET = "Churn"
@@ -48,26 +53,16 @@ pipeline = Pipeline(
     ]
 )
 
+def save_fitted_pipeline_plots(out_dir: str):
+    rf_features = pipeline["classifier"].feature_names_in_
+    rf_feature_importances = pipeline["classifier"].feature_importances_
+    feature_importance_df = pd.DataFrame(
+            zip(
+                rf_features,
+                rf_feature_importances,
+            ),
+            columns=["feature", "importance"],
+        ).sort_values(by="importance", ascending=False)
 
-#
-# def get_feature_names(ml_pipeline):
-#     ml_pipeline["feature_preprocess"].transformer_list[0][1][
-#         2
-#     ].feature_names_in_ = CATEGORICAL_COLS
-#     return (
-#         ml_pipeline["feature_preprocess"]
-#         .transformer_list[0][1][2]
-#         .get_feature_names_out()
-#         .tolist()
-#         + NUMERICAL_COLS
-#     )
-#
-#
-# def get_feature_importances(ml_pipeline):
-#     return pd.DataFrame(
-#         zip(
-#             get_feature_names(ml_pipeline),
-#             ml_pipeline["classifier"].feature_importances_,
-#         ),
-#         columns=["feature", "importance"],
-#     ).sort_values(by="importance", ascending=False)
+    barplot_fig = sns.barplot(x="feature", y="importance", data=feature_importance_df).get_figure()
+    barplot_fig.savefig(Path(out_dir) / Path("random_forest_feature_importances.png"))
