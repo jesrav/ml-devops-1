@@ -19,6 +19,8 @@ train_evaluate_logreg:
 train_evaluate_random_forest:
 	python3 src/modelling/train_evaluate.py "src.modelling.model_configs.random_forest" "random_forest"
 
+run_and_log_tests:
+	pytest --log-cli-level info > logs/churn_library.log
 
 ########################################################
 # Utils
