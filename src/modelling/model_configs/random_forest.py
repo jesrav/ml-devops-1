@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklego.preprocessing import ColumnSelector, ColumnDropper
 import pandas as pd
 import seaborn as sns
+from matplotlib import pyplot as plt
 
 from src.modelling.custom_transformers import AddMeanWithinCategory
 
@@ -64,6 +65,13 @@ def save_fitted_pipeline_plots(out_dir: str):
             columns=["feature", "importance"],
         ).sort_values(by="importance", ascending=False)
 
-    barplot_fig = sns.barplot(x="feature", y="importance", data=feature_importance_df).get_figure()
-    barplot_fig.savefig(Path(out_dir) / Path("random_forest_feature_importances.png"))
-    pass
+    plt.figure(figsize=(20, 20))
+    ax = sns.barplot(x="feature", y="importance", data=feature_importance_df)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+    plt.setp(ax.get_xticklabels(), fontsize=24)
+    plt.setp(ax.get_yticklabels(), fontsize=24)
+    plt.xlabel('feature', fontsize=24)
+    plt.ylabel('importance', fontsize=24)
+    fig = ax.get_figure()
+    fig.subplots_adjust(bottom=0.3)
+    fig.savefig(Path(out_dir) / Path("random_forest_feature_importances.png"))
