@@ -26,7 +26,7 @@ train_evaluate_random_forest:
 	"modelling_artifacts/random_forest"
 
 run_and_log_tests:
-	python3 tests/churn_script_logging_and_tests.py > logs/churn_library.log
+	python3 run_and_log_tests.py > logs/churn_library.log
 
 ########################################################
 # Utils
