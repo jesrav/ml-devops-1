@@ -1,5 +1,4 @@
 from pathlib import Path
-from unittest.mock import Mock
 import tempfile
 
 import pytest
@@ -10,6 +9,9 @@ from src.data.preprocessing import add_churn_target
 from src.utils import import_data
 from src.modelling.custom_transformers import AddMeanWithinCategory
 from src.modelling.eda import perform_eda
+from src.data.feature_engineering import add_features
+from src.modelling.train_evaluate import train_and_evaluate
+from src.modelling.model_configs import RandomForestConfig
 from src.logger import logger
 from src import config
 
@@ -117,29 +119,67 @@ def test_eda(perform_eda_func):
         config.AGE_HIST_PATH = f"{tmpdirname}/age_hist.jpg"
         config.CORR_HEATMAP_PATH = f"{tmpdirname}/corr_heatmap.jpg"
 
+        # Load and preprocess data
+        df = import_data("data/bank_data.csv")
+        df = add_churn_target(df)
+
         # Perform eda
-        df = import_data("data/processed_bank_data.csv")
-        perform_eda(df)
+        perform_eda_func(df)
 
         # Check if plots exist.
         churn_hist_exists = Path(config.CHURN_HIST_PATH).is_file()
         age_hist_exists =  Path(config.AGE_HIST_PATH).is_file()
         corr_plot_exists =  Path(config.CORR_HEATMAP_PATH).is_file()
-        if churn_hist_exists and age_hist_exists and corr_plot_exists:
-            logger.info("Testing perform_eda: SUCCESS")
-        else:
-            if not churn_hist_exists:
-                logger.info("Testing perform_eda: Fails - Churn histogram not created.")
-            if not age_hist_exists:
-                logger.info("Testing perform_eda: Fails - Age histogram not created.")
-            if not corr_plot_exists:
-                logger.info("Testing perform_eda: Fails - Correlation heatmap not created.")
+    if churn_hist_exists and age_hist_exists and corr_plot_exists:
+        logger.info("Testing perform_eda: SUCCESS")
+    else:
+        if not churn_hist_exists:
+            logger.info("Testing perform_eda: Fails - Churn histogram not created.")
+        if not age_hist_exists:
+            logger.info("Testing perform_eda: Fails - Age histogram not created.")
+        if not corr_plot_exists:
+            logger.info("Testing perform_eda: Fails - Correlation heatmap not created.")
 
 
-# def test_train_models(train_models):
-#     """
-#     test train_models
-#     """
+def test_train_and_evaluate(train_and_evaluate_func):
+    """
+    test train_and_evaluate using random forest model config.
+    """
+
+    # Get modelling data
+    df = import_data("data/bank_data.csv")
+    df = add_churn_target(df)
+    df = add_features(df)
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        train_and_evaluate_func(
+            dataf=df,
+            model_config=RandomForestConfig,
+            run_name="rf",
+            artifact_dir=tmpdirname
+        )
+        expected_file_names = [
+            "rf_test_metrics.json",
+            "rf_test_auc_plot.png",
+            "rf_test_precision_recall_plot.png",
+            "rf_test_probability_calibration_plot.png",
+            "rf_train_metrics.json",
+            "rf_train_auc_plot.png",
+            "rf_train_precision_recall_plot.png",
+            "rf_train_probability_calibration_plot.png",
+            "random_forest_feature_importances.png"
+        ]
+        expected_file_paths = [Path(tmpdirname) / Path(fn) for fn in expected_file_names]
+        expected_file_paths_exists = {
+            fn: Path(expected_file_paths[i]).is_file()
+            for i, fn in enumerate(expected_file_names)
+        }
+    if all(expected_file_paths_exists.values()):
+        logger.info("Testing train_and_evaluate: SUCCESS")
+    else:
+        for fn, fp_is_file in expected_file_paths_exists.items():
+            if not fp_is_file:
+                logger.info(f"Testing train_and_evaluate: Fails - {fn} not created.")
 
 
 if __name__ == "__main__":
@@ -148,3 +188,4 @@ if __name__ == "__main__":
     test_add_mean_within_category(AddMeanWithinCategory)
     test_add_churn_target(add_churn_target)
     test_eda(perform_eda)
+    test_train_and_evaluate(train_and_evaluate)
