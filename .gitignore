@@ -89,12 +89,11 @@ target/
 .mypy_cache/
 
 /data/processed_bank_data.csv
-/models/*.pickle
-/modelling_artifacts/**/*.pkl
-/modelling_artifacts/**/*.jpg
-/modelling_artifacts/**/*.png
-/modelling_artifacts/**/*.json
-/modelling_artifacts/**/*.csv
+/models/**/*.pkl
+/images/**/*.jpg
+/images/**/*.png
+/results/**/*.jpg
+/results/**/*.png
+/results/**/*.json
 /logs/churn_library.log
 /eda/*.jpg
-/data/modelling_bank_data.csv

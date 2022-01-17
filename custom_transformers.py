@@ -1,5 +1,5 @@
 """Module that contains custom sklearn compatible transformer classes."""
-from typing import List
+from typing import List, Union
 
 import pandas as pd
 
@@ -13,12 +13,19 @@ class AddMeanWithinCategory(TransformerMixin, BaseEstimator):
     """
 
     def __init__(
-        self, cat_cols: List[str], target_col: str, new_col_names: List[str]
+        self,
+        cat_cols: List[str],
+        target_col: str,
+        new_col_names: List[str],
+        group_means: Union[None, dict] = None,
     ) -> None:
         self.cat_cols = cat_cols
         self.target_col = target_col
         self.new_col_names = new_col_names
-        self.group_means = {cat_col: {} for cat_col in cat_cols}
+        if group_means is None:
+            self.group_means = {cat_col: {} for cat_col in cat_cols}
+        else:
+            self.group_means = group_means
 
     def fit(self, X: pd.DataFrame, y=None):
         for cat_col in self.cat_cols:
