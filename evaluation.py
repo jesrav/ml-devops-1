@@ -1,5 +1,8 @@
-"""Module that contains functionality to evaluate model performance.
-The main function is evaluate, which returns metrics and plots about out of sample predictions.
+"""
+Module that contains functionality to evaluate model performance.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
 """
 import json
 from pathlib import Path
@@ -17,12 +20,16 @@ class Evaluation:
     def __init__(
         self, y_true: np.ndarray, y_proba: np.ndarray, prediction_threshold: float,
     ) -> None:
-        """Construct the Evaluation object
-        :y_true: y_true (array-like, shape (n_samples)) – Ground truth (correct) target values.
-        :y_proba: (array-like, shape (n_samples, 2)) – Prediction probabilities for the two classes
-            returned by a classifier.
-        :prediction_threshold: Threshold over which to predict a
-        :return: None
+        """
+        Construct the Evaluation object
+        
+        input:
+                y_true: y_true (array-like, shape (n_samples)) – Ground truth (correct) target values.
+                y_proba: (array-like, shape (n_samples, 2)) – Prediction probabilities for the two classes
+                    returned by a classifier.
+                prediction_threshold: Threshold over which to predict a positive.
+        output:
+                None
         """
 
         if not 0 < prediction_threshold < 1:
@@ -48,8 +55,6 @@ class Evaluation:
     def plot_auc(self, outpath: Path) -> None:
         """Plot AUC curve
         The plot is saved to outpath
-        :outpath: Outpath for plot.
-        :return: None
         """
         plt.subplots()
         skplt.metrics.plot_roc(

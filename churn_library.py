@@ -1,4 +1,9 @@
-"""Module for training and evaluating a churn model."""
+"""
+Module for training and evaluating a churn model.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
+"""
 from pathlib import Path
 from typing import Type
 
@@ -8,7 +13,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 
 from evaluation import Evaluation
 from model_configs import BaseModelConfig, LogregConfig, RandomForestConfig
-from plotting import plot_univariate_hist, plot_correlation_heatmap
+from plotting import plot_univariate_hist, plot_correlation_heatmap, plot_univariate_dist, plot_bar_chart
 
 TARGET = "Churn"
 
@@ -51,12 +56,19 @@ def perform_eda(dataf: pd.DataFrame, out_dir: str) -> None:
     output:
             None
     """
+    # Set paths
     churn_hist_path = Path(out_dir) / Path("churn_hist.jpg")
     age_hist_path = Path(out_dir) / Path("age_hist.jpg")
     corr_heatmap_path = Path(out_dir) / Path("corr_heatmap.jpg")
+    dist_total_transaction_path = Path(out_dir) / Path("dist_total_transaction.jpg")
+    barchart_marital_status_path = Path(out_dir) / Path("barchart_marital_status.jpg")
+
+    # Create plots
     plot_univariate_hist(dataf, "Churn", str(churn_hist_path))
     plot_univariate_hist(dataf, "Customer_Age", str(age_hist_path))
     plot_correlation_heatmap(dataf, str(corr_heatmap_path))
+    plot_univariate_dist(dataf, "Customer_Age", str(dist_total_transaction_path))
+    plot_bar_chart(dataf, "Marital_Status", str(barchart_marital_status_path))
 
 
 def train_model_cross_validation(

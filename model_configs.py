@@ -3,6 +3,9 @@ Module that holds the ml model configs.
 
 Any model config that needs to work with the `src/modelling/train_evaluate.py` module,
 must conform to this interface specified in the meta class BaseModelConfig.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
 """
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -107,6 +110,7 @@ class LogregConfig(BaseModelConfig):
 
     @staticmethod
     def get_hyper_parameter_to_search():
+        """Return hyperparemeters to seach though."""
         return {'classifier__C': [0.1]}
 
 
@@ -177,6 +181,7 @@ class RandomForestConfig(BaseModelConfig):
 
     @staticmethod
     def save_fitted_pipeline_plots(pipeline, out_dir: str):
+        """Save plot of feature importances for random forest model."""
         rf_features = pipeline["classifier"].feature_names_in_
         rf_feature_importances = pipeline["classifier"].feature_importances_
         feature_importance_df = pd.DataFrame(
@@ -200,4 +205,5 @@ class RandomForestConfig(BaseModelConfig):
 
     @staticmethod
     def get_hyper_parameter_to_search():
+        """Return hyperparemeters to seach though."""
         return {'classifier__n_estimators': [100]}
