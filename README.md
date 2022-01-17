@@ -58,7 +58,7 @@ You can view the logs from the tests in `logs/churn_library.log`.
 |   |   |-- __init__.py
 |   |   |-- feature_engineering.py  <- Code related to data transformations
 |   |   `-- preprocessing.py        <- Feature engineering code
-|   `-- modelling
+|   `-- modelling                   <- Code related to the modelling
 |       |-- __init__.py
 |       |-- custom_transformers.py  <- Custom sklearn compatible transformers
 |       |-- eda.py                  <- Exploratory data analysis code
