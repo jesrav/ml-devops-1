@@ -1,4 +1,6 @@
-#import  logging
+from pathlib import Path
+from unittest.mock import Mock
+import tempfile
 
 import pytest
 import pandas as pd
@@ -7,15 +9,9 @@ import numpy as np
 from src.data.preprocessing import add_churn_target
 from src.utils import import_data
 from src.modelling.custom_transformers import AddMeanWithinCategory
+from src.modelling.eda import perform_eda
 from src.logger import logger
-
-
-# logging.basicConfig(
-#     filename='logs/churn_library.log',
-#     level=logging.INFO,
-#     filemode='w',
-#     format='%(name)s - %(levelname)s - %(message)s')
-
+from src import config
 
 
 def test_import(import_data_func):
@@ -97,7 +93,7 @@ def test_add_churn_target(add_churn_target_func):
                 "Attrited Customer",
             ],
             "dummy": [1, 3, 3],
-            "Churn": [0, 0, 0],
+            "Churn": [0, 0, 1],
         }
     )
     try:
@@ -109,25 +105,37 @@ def test_add_churn_target(add_churn_target_func):
             f"The transformed data frame does not match the expected results: {e}"
         )
 
-# def test_eda(perform_eda):
-#     """
-#     test perform eda function
-#     """
-#
-#
-# def test_get_mean_within_category(encoder_helper):
-#     """
-#     test encoder helper
-#     """
-#     get_mean_within_category$
-#
-#
-# def test_perform_feature_engineering(perform_feature_engineering):
-#     """
-#     test perform_feature_engineering
-#     """
-#
-#
+
+def test_eda(perform_eda_func):
+    """
+    Test that perform_eda function produces 3 plots
+    """
+    with tempfile.TemporaryDirectory() as tmpdirname:
+
+        # Change the config object to point to temp paths
+        config.CHURN_HIST_PATH = f"{tmpdirname}/churn_hist.jpg"
+        config.AGE_HIST_PATH = f"{tmpdirname}/age_hist.jpg"
+        config.CORR_HEATMAP_PATH = f"{tmpdirname}/corr_heatmap.jpg"
+
+        # Perform eda
+        df = import_data("data/processed_bank_data.csv")
+        perform_eda(df)
+
+        # Check if plots exist.
+        churn_hist_exists = Path(config.CHURN_HIST_PATH).is_file()
+        age_hist_exists =  Path(config.AGE_HIST_PATH).is_file()
+        corr_plot_exists =  Path(config.CORR_HEATMAP_PATH).is_file()
+        if churn_hist_exists and age_hist_exists and corr_plot_exists:
+            logger.info("Testing perform_eda: SUCCESS")
+        else:
+            if not churn_hist_exists:
+                logger.info("Testing perform_eda: Fails - Churn histogram not created.")
+            if not age_hist_exists:
+                logger.info("Testing perform_eda: Fails - Age histogram not created.")
+            if not corr_plot_exists:
+                logger.info("Testing perform_eda: Fails - Correlation heatmap not created.")
+
+
 # def test_train_models(train_models):
 #     """
 #     test train_models
@@ -139,3 +147,4 @@ if __name__ == "__main__":
     test_import_raises_right_error(import_data)
     test_add_mean_within_category(AddMeanWithinCategory)
     test_add_churn_target(add_churn_target)
+    test_eda(perform_eda)

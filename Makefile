@@ -10,7 +10,7 @@ preprocess:
 add_features:
 	python3 src/data/feature_engineering.py
 
-eda:
+perform_eda:
 	python3 src/modelling/eda.py
 
 train_evaluate_logreg:
@@ -26,7 +26,7 @@ train_evaluate_random_forest:
 	"modelling_artifacts/random_forest"
 
 run_and_log_tests:
-	python3 tests/churn_script_logging_and_tests.py --log-cli-level info > logs/churn_library.log
+	python3 tests/churn_script_logging_and_tests.py > logs/churn_library.log
 
 ########################################################
 # Utils
