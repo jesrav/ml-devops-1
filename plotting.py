@@ -1,4 +1,9 @@
-"""Module for plotting functionality."""
+"""
+Module for plotting functionality.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
+"""
 import os
 import pandas as pd
 from matplotlib import pyplot as plt

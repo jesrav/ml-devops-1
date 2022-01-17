@@ -1,4 +1,9 @@
-"""Module that contains custom sklearn compatible transformer classes."""
+"""
+Module that contains custom sklearn compatible transformer classes.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
+"""
 from typing import List, Union
 
 import pandas as pd
@@ -28,6 +33,7 @@ class AddMeanWithinCategory(TransformerMixin, BaseEstimator):
             self.group_means = group_means
 
     def fit(self, X: pd.DataFrame, y=None):
+        """Fit transfomer, by calculating category means."""
         for cat_col in self.cat_cols:
             self.group_means[cat_col] = (
                 X[self.target_col].groupby(X[cat_col]).mean().to_dict()
@@ -35,6 +41,7 @@ class AddMeanWithinCategory(TransformerMixin, BaseEstimator):
         return self
 
     def transform(self, X: pd.DataFrame):
+        """Transfomer dataframe by adding category means."""
         X = X.copy()
         for i, cat_col in enumerate(self.cat_cols):
             X[self.new_col_names[i]] = X[cat_col].map(self.group_means[cat_col])

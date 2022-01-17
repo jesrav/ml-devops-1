@@ -1,4 +1,9 @@
-"""Module for training and evaluating a churn model."""
+"""
+Module for training and evaluating a churn model.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
+"""
 from pathlib import Path
 from typing import Type
 

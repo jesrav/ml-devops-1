@@ -1,3 +1,9 @@
+"""
+Script for testing the functions in the churn project.
+
+Author: Jes Ravnbøl
+Created: 2022-01-17
+"""
 import logging
 from pathlib import Path
 import tempfile
@@ -56,6 +62,9 @@ def test_import_raises_right_error(import_data_func):
 
 
 def test_add_mean_within_category(transformer_cls):
+    """
+    Test that the transformer class `AddMeanWithinCategory` works as expected.
+    """
     group_mean_transformer = transformer_cls(
         cat_cols=["group"], target_col="value", new_col_names=["grouped_mean"]
     )
@@ -79,7 +88,7 @@ def test_add_mean_within_category(transformer_cls):
 
 
 def test_add_churn_target(add_churn_target_func):
-
+    """Test that add_churn_target works as expected."""
     input_df = pd.DataFrame(
         {
             "Attrition_Flag": [
@@ -145,7 +154,7 @@ def test_perform_eda(perform_eda_func):
 
 def test_train_model_cross_validation(train_model_cross_validation_func):
     """
-    test train_and_evaluate using random forest model config.
+    Test train_and_evaluate using random forest model config.
     We test that the relevant artifacts from the function are created.
     """
 
