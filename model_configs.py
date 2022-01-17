@@ -50,7 +50,7 @@ class LogregConfig(BaseModelConfig):
 
     @staticmethod
     def get_pipeline(**params):
-        """Get logistig regression pipeline
+        """Get logistic regression pipeline
 
         The pipeline works on a dataframe and selects the features.
         The categorical features are replaced with the churn mean within each
@@ -107,7 +107,7 @@ class LogregConfig(BaseModelConfig):
 
     @staticmethod
     def get_hyper_parameter_to_search():
-        return [{'C': 0.1}]
+        return {'classifier__C': [0.1]}
 
 
     @staticmethod
@@ -121,6 +121,15 @@ class RandomForestConfig(BaseModelConfig):
 
     @staticmethod
     def get_pipeline(**params):
+        """Get random forest pipeline
+
+        The pipeline works on a dataframe and selects the features.
+        The categorical features are replaced with the churn mean within each
+        category.
+
+        input:
+            params: Parameters for the sklearn compatible pipeline.
+        """
         TARGET = "Churn"
         FEATURES = [
             "Customer_Age",
@@ -191,4 +200,4 @@ class RandomForestConfig(BaseModelConfig):
 
     @staticmethod
     def get_hyper_parameter_to_search():
-        return [{'n_trees': 100}]
+        return {'classifier__n_estimators': [100]}

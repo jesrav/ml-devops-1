@@ -4,7 +4,7 @@ from typing import Type
 
 import joblib
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 
 from evaluation import Evaluation
 from model_configs import BaseModelConfig, LogregConfig, RandomForestConfig
@@ -14,7 +14,7 @@ import config
 
 def import_data(pth: str) -> pd.DataFrame:
     """
-    returns dataframe for the csv found at pth
+    Returns dataframe for the csv found at pth
 
     input:
             pth: a path to the csv
@@ -59,7 +59,7 @@ def perform_eda(dataf: pd.DataFrame, out_dir: str) -> None:
     plot_correlation_heatmap(dataf, str(corr_heatmap_path))
 
 
-def train_model(
+def train_model_cross_validation(
         dataf: pd.DataFrame,
         model_config: Type[BaseModelConfig],
         run_name: str,
@@ -71,7 +71,7 @@ def train_model(
 
     input:
         dataf: Dataframe with modelling data.
-        model_config: Model configuration
+        model_config: Model configuration. Must follow the interface found in BaseModelConfig.
         run_name: Name of the training run.
         model_artifact_path: Path where the model artifacts is saved.
         model_evaluation_plots_dir: Directory where the model evaluation plots are saved.
@@ -84,15 +84,23 @@ def train_model(
         dataf, test_size=0.3, random_state=42
     )
 
-    # Fitting ml pipeline.
-    pipeline = model_config.get_pipeline()
-    pipeline.fit(train_df, train_df[config.TARGET])
+    # Fit ml pipeline using cross validation and use best model.
+    cv_pipeline = GridSearchCV(
+        estimator=model_config.get_pipeline(),
+        param_grid=model_config.get_hyper_parameter_to_search(),
+        cv=5
+    )
+    cv_pipeline.fit(train_df, train_df[config.TARGET])
+    best_pipeline = cv_pipeline.best_estimator_
 
-    # Saving plots specific to the fitted model
-    model_config.save_fitted_pipeline_plots(pipeline, str(model_evaluation_plots_dir))
+    # Save plots specific to the fitted model
+    model_config.save_fitted_pipeline_plots(
+        pipeline=best_pipeline,
+        out_dir=str(model_evaluation_plots_dir)
+    )
 
-    # Evaluating ml pipeline on test set
-    y_test_probas = pipeline.predict_proba(test_df)
+    # Evaluate ml pipeline on test set
+    y_test_probas = best_pipeline.predict_proba(test_df)
     test_evaluation = Evaluation(
         y_true=test_df[config.TARGET], y_proba=y_test_probas, prediction_threshold=0.5
     )
@@ -100,8 +108,8 @@ def train_model(
         outdir=model_evaluation_plots_dir, artifact_prefix=f"{run_name}_test"
     )
 
-    # Evaluating ml pipeline on train set
-    y_train_probas = pipeline.predict_proba(train_df)
+    # Evaluate ml pipeline on train set
+    y_train_probas = best_pipeline.predict_proba(train_df)
     train_evaluation = Evaluation(
        y_true=train_df[config.TARGET], y_proba=y_train_probas, prediction_threshold=0.5
     )
@@ -110,7 +118,7 @@ def train_model(
     )
 
     # Serialize ml pipeline object.
-    joblib.dump(pipeline, model_artifact_path)
+    joblib.dump(best_pipeline, model_artifact_path)
 
 
 if __name__ == '__main__':
@@ -122,7 +130,7 @@ if __name__ == '__main__':
     perform_eda(df, out_dir="images")
 
     # Train and evaluate logistic regression model
-    train_model(
+    train_model_cross_validation(
         dataf=df,
         model_config=LogregConfig,
         run_name="logreg",
@@ -131,7 +139,7 @@ if __name__ == '__main__':
     )
 
     # Train and evaluate random forest model
-    train_model(
+    train_model_cross_validation(
         dataf=df,
         model_config=RandomForestConfig,
         run_name="random_forest",
