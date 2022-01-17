@@ -3,7 +3,7 @@ from typing import List, Union
 
 import pandas as pd
 
-from sklearn.base import TransformerMixin, BaseEstimator, clone
+from sklearn.base import TransformerMixin, BaseEstimator
 
 
 class AddMeanWithinCategory(TransformerMixin, BaseEstimator):

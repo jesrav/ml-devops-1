@@ -6,11 +6,11 @@ must conform to this interface specified in the meta class BaseModelConfig.
 """
 from abc import ABC, abstractmethod
 from pathlib import Path
+from copy import deepcopy
 
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from copy import deepcopy
 from sklego.preprocessing import ColumnSelector, ColumnDropper
 import pandas as pd
 import seaborn as sns
@@ -24,7 +24,7 @@ class BaseModelConfig(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_pipeline(self, **params):
+    def get_pipeline(**params):
         """Returns SKLearn compatible ml pipeline
 
         input:
@@ -59,8 +59,8 @@ class LogregConfig(BaseModelConfig):
         input:
             params: Parameters for the sklearn compatible pipeline.
         """
-        TARGET = "Churn"
-        FEATURES = [
+        target = "Churn"
+        features = [
             "Customer_Age",
             "Dependent_count",
             "Months_on_book",
@@ -81,7 +81,7 @@ class LogregConfig(BaseModelConfig):
             "Income_Category",
             "Card_Category",
         ]
-        CAT_COLS = [
+        cat_cols = [
             "Gender",
             "Education_Level",
             "Marital_Status",
@@ -90,16 +90,16 @@ class LogregConfig(BaseModelConfig):
         ]
 
         churn_group_mean_transformer = AddMeanWithinCategory(
-            cat_cols=CAT_COLS,
+            cat_cols=cat_cols,
             target_col="Churn",
-            new_col_names=[col + "_Churn" for col in CAT_COLS],
+            new_col_names=[col + "_Churn" for col in cat_cols],
         )
 
         vanilla_pipeline = Pipeline(
             [
-                ("select_columns", ColumnSelector(FEATURES + [TARGET])),
+                ("select_columns", ColumnSelector(features + [target])),
                 ("create_churn_group_means", churn_group_mean_transformer),
-                ("drop_cat_cols_and_target", ColumnDropper(CAT_COLS + [TARGET])),
+                ("drop_cat_cols_and_target", ColumnDropper(cat_cols + [target])),
                 ("classifier", LogisticRegression())
             ]
         )
@@ -130,8 +130,8 @@ class RandomForestConfig(BaseModelConfig):
         input:
             params: Parameters for the sklearn compatible pipeline.
         """
-        TARGET = "Churn"
-        FEATURES = [
+        target = "Churn"
+        features = [
             "Customer_Age",
             "Dependent_count",
             "Months_on_book",
@@ -152,7 +152,7 @@ class RandomForestConfig(BaseModelConfig):
             "Income_Category",
             "Card_Category",
         ]
-        CAT_COLS = [
+        cat_cols = [
             "Gender",
             "Education_Level",
             "Marital_Status",
@@ -160,16 +160,16 @@ class RandomForestConfig(BaseModelConfig):
             "Card_Category",
         ]
         churn_group_mean_transformer = AddMeanWithinCategory(
-            cat_cols=CAT_COLS,
+            cat_cols=cat_cols,
             target_col="Churn",
-            new_col_names=[col + "_Churn" for col in CAT_COLS],
+            new_col_names=[col + "_Churn" for col in cat_cols],
         )
 
         vanilla_pipeline = Pipeline(
             [
-                ("select_columns", ColumnSelector(FEATURES + [TARGET])),
+                ("select_columns", ColumnSelector(features + [target])),
                 ("create_churn_group_means", churn_group_mean_transformer),
-                ("drop_cat_cols_and_target", ColumnDropper(CAT_COLS + [TARGET])),
+                ("drop_cat_cols_and_target", ColumnDropper(cat_cols + [target])),
                 ("classifier", RandomForestClassifier())
             ]
         )

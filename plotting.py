@@ -41,4 +41,3 @@ def plot_correlation_heatmap(dataf: pd.DataFrame, out_path: str) -> None:
         dataf.corr(), annot=False, cmap="Dark2_r", linewidths=2
     ).get_figure()
     corr_heatmap_fig.savefig(out_path)
-

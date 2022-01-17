@@ -9,8 +9,8 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from evaluation import Evaluation
 from model_configs import BaseModelConfig, LogregConfig, RandomForestConfig
 from plotting import plot_univariate_hist, plot_correlation_heatmap
-import config
 
+TARGET = "Churn"
 
 def import_data(pth: str) -> pd.DataFrame:
     """
@@ -51,9 +51,9 @@ def perform_eda(dataf: pd.DataFrame, out_dir: str) -> None:
     output:
             None
     """
-    churn_hist_path = Path(config.EDA_PLOT_DIR) / Path("churn_hist.jpg")
-    age_hist_path = Path(config.EDA_PLOT_DIR) / Path("age_hist.jpg")
-    corr_heatmap_path = Path(config.EDA_PLOT_DIR) / Path("corr_heatmap.jpg")
+    churn_hist_path = Path(out_dir) / Path("churn_hist.jpg")
+    age_hist_path = Path(out_dir) / Path("age_hist.jpg")
+    corr_heatmap_path = Path(out_dir) / Path("corr_heatmap.jpg")
     plot_univariate_hist(dataf, "Churn", str(churn_hist_path))
     plot_univariate_hist(dataf, "Customer_Age", str(age_hist_path))
     plot_correlation_heatmap(dataf, str(corr_heatmap_path))
@@ -90,7 +90,7 @@ def train_model_cross_validation(
         param_grid=model_config.get_hyper_parameter_to_search(),
         cv=5
     )
-    cv_pipeline.fit(train_df, train_df[config.TARGET])
+    cv_pipeline.fit(train_df, train_df[TARGET])
     best_pipeline = cv_pipeline.best_estimator_
 
     # Save plots specific to the fitted model
@@ -102,7 +102,7 @@ def train_model_cross_validation(
     # Evaluate ml pipeline on test set
     y_test_probas = best_pipeline.predict_proba(test_df)
     test_evaluation = Evaluation(
-        y_true=test_df[config.TARGET], y_proba=y_test_probas, prediction_threshold=0.5
+        y_true=test_df[TARGET], y_proba=y_test_probas, prediction_threshold=0.5
     )
     test_evaluation.save_evaluation_artifacts(
         outdir=model_evaluation_plots_dir, artifact_prefix=f"{run_name}_test"
@@ -111,7 +111,7 @@ def train_model_cross_validation(
     # Evaluate ml pipeline on train set
     y_train_probas = best_pipeline.predict_proba(train_df)
     train_evaluation = Evaluation(
-       y_true=train_df[config.TARGET], y_proba=y_train_probas, prediction_threshold=0.5
+       y_true=train_df[TARGET], y_proba=y_train_probas, prediction_threshold=0.5
     )
     train_evaluation.save_evaluation_artifacts(
         outdir=model_evaluation_plots_dir, artifact_prefix=f"{run_name}_train"
