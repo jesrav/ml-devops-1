@@ -3,8 +3,8 @@
 - Project **Predict Customer Churn** of ML DevOps Engineer Nanodegree Udacity
 
 ## Project Description
-The projects is the 1 part of the ML DevOps Engineer Nanodegree.
-The goal was to refactor the contents of a jupyter notebook.
+The project is the first in the ML DevOps Engineer Nanodegree.
+The goal is to refactor the contents of a jupyter notebook.
 
 ## Get started
 
