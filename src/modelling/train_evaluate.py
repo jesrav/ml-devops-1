@@ -11,7 +11,7 @@ from src.utils import import_data
 from src import config
 from src.logger import logger
 from src.modelling.evaluation import Evaluation
-from src.modelling.bu.base_model_config import BaseModelConfig
+from src.modelling.model_configs import BaseModelConfig
 
 
 MODEL_CONFIGS_MODULE_STR = "src.modelling.model_configs"
@@ -21,7 +21,8 @@ def train_and_evaluate(
         dataf: pd.DataFrame,
         model_config: BaseModelConfig,
         run_name: str,
-        artifact_dir: str
+        artifact_dir: str,
+        logging: bool = True,
 ) -> None:
     """
     Train and evaluate ml model pipeline
@@ -30,6 +31,8 @@ def train_and_evaluate(
         dataf: Dataframe with modelling data.
         model_config: Model configuration
         run_name: Name of the training run.
+        artifact_dir: Directory where the modelling artifacts are saved.
+        logging: Weather to log
 
     output:
             None
