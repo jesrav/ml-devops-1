@@ -33,7 +33,7 @@ run_and_log_tests:
 ########################################################
 
 build:
-	docker build -t ml-devops -f ./Dockerfile_dev .
+	docker build -t ml-devops .
 
 dev_docker:
 	docker run -it -v $(mkfile_dir):/ml-devops-1 ml-devops
