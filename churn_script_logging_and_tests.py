@@ -135,13 +135,24 @@ def test_perform_eda(perform_eda_func):
         expected_churn_hist_path = Path(tmpdirname) / Path("churn_hist.jpg")
         expected_age_hist_path = Path(tmpdirname) / Path("age_hist.jpg")
         expected_corr_heatmap_path = Path(tmpdirname) / Path("corr_heatmap.jpg")
+        expected_dist_total_transaction_path = Path(tmpdirname) / Path("dist_total_transaction.jpg")
+        expected_barchart_marital_status_path = Path(tmpdirname) / Path("barchart_marital_status.jpg")
 
         # Check if expected plots have been created.
         churn_hist_exists = expected_churn_hist_path.is_file()
         age_hist_exists =  expected_age_hist_path.is_file()
         corr_plot_exists =  expected_corr_heatmap_path.is_file()
+        dist_total_transaction_plot_exists = expected_dist_total_transaction_path.is_file()
+        barchart_marital_status_plot_exists = expected_barchart_marital_status_path.is_file()
 
-    if churn_hist_exists and age_hist_exists and corr_plot_exists:
+
+    if all([
+        churn_hist_exists,
+        age_hist_exists,
+        corr_plot_exists,
+        dist_total_transaction_plot_exists,
+        barchart_marital_status_plot_exists,
+    ]):
         logging.info("Testing perform_eda: SUCCESS")
     else:
         if not churn_hist_exists:
@@ -150,6 +161,14 @@ def test_perform_eda(perform_eda_func):
             logging.info("Testing perform_eda: Fails - Age histogram not created.")
         if not corr_plot_exists:
             logging.info("Testing perform_eda: Fails - Correlation heatmap not created.")
+        if not dist_total_transaction_plot_exists:
+            logging.info(
+                "Testing perform_eda: Fails - Distribution plot for total transactions not created."
+            )
+        if not barchart_marital_status_plot_exists:
+            logging.info(
+                "Testing perform_eda: Fails - Bar chart for marital status not created."
+            )
 
 
 def test_train_model_cross_validation(train_model_cross_validation_func):
