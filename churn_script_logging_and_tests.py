@@ -7,13 +7,13 @@ import numpy as np
 
 from src.data.preprocessing import add_churn_target
 from src.utils import import_data
-from src.modelling.custom_transformers import AddMeanWithinCategory
+from custom_transformers import AddMeanWithinCategory
 from src.modelling.eda import perform_eda
 from src.data.feature_engineering import add_features
-from src.modelling.train_evaluate import train_and_evaluate
-from src.modelling.model_configs import RandomForestConfig
+from train_evaluate import train_and_evaluate
+from model_configs import RandomForestConfig
 from src.logger import logger
-from src import config
+import config
 
 
 def test_import(import_data_func):

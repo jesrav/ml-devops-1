@@ -16,7 +16,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from src.modelling.custom_transformers import AddMeanWithinCategory
+from custom_transformers import AddMeanWithinCategory
 
 
 class BaseModelConfig(ABC):
