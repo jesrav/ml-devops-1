@@ -151,6 +151,9 @@ def test_train_and_evaluate(train_and_evaluate_func):
     df = add_churn_target(df)
     df = add_features(df)
 
+    logger.info(
+        "Running entire training job for random forest model to test train_evaluate function:"
+    )
     with tempfile.TemporaryDirectory() as tmpdirname:
         train_and_evaluate_func(
             dataf=df,
